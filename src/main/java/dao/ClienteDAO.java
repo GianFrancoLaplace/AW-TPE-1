@@ -1,6 +1,7 @@
 package dao;
 
 import entities.Cliente;
+import entities.ClienteFacturacion;
 import utils.DatabaseConnection;
 
 import java.sql.Connection;
@@ -8,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.ArrayList;
 
 public class ClienteDAO {
 
@@ -71,5 +73,42 @@ public class ClienteDAO {
         }
 
         return 0;
+    }
+
+    public static List<ClienteFacturacion> getClientesOrdenadosPorFacturacion() {
+        String sql =
+                "SELECT " +
+                        "    c.idCliente, " +
+                        "    c.nombre, " +
+                        "    c.email, " +
+                        "    SUM(fp.cantidad * p.valor) AS total_facturado " +
+                        "FROM Cliente c " +
+                        "INNER JOIN Factura f ON c.idCliente = f.idCliente " +
+                        "INNER JOIN Factura_Producto fp ON f.idFactura = fp.idFactura " +
+                        "INNER JOIN Producto p ON fp.idProducto = p.idProducto " +
+                        "GROUP BY c.idCliente, c.nombre, c.email " +
+                        "ORDER BY total_facturado DESC";
+
+        List<ClienteFacturacion> clientes = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnection.getMySQLConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                ClienteFacturacion cliente = new ClienteFacturacion(
+                        rs.getInt("idCliente"),
+                        rs.getString("nombre"),
+                        rs.getString("email"),
+                        rs.getFloat("total_facturado")
+                );
+                clientes.add(cliente);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error obteniendo clientes ordenados por facturación: " + e.getMessage());
+        }
+
+        return clientes;
     }
 }
