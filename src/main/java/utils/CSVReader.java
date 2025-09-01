@@ -132,7 +132,7 @@ public class CSVReader {
      */
     public static List<FacturaProducto> readFacturasProductos() {
         List<FacturaProducto> facturasProductos = new ArrayList<>();
-        String fileName = "/facturasproductos.csv";
+        String fileName = "/facturas-productos.csv";
 
         System.out.println("Leyendo facturas-productos desde CSV...");
 

@@ -1,6 +1,7 @@
 package dao;
 
 import entities.Producto;
+import entities.ProductoRecaudacion;
 import utils.DatabaseConnection;
 
 import java.sql.Connection;
@@ -8,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
 
 public class ProductoDAO {
 
@@ -71,5 +73,41 @@ public class ProductoDAO {
         }
 
         return 0;
+    }
+
+    // Agregar este método a la clase ProductoDAO existente
+
+    public static ProductoRecaudacion getProductoMasRecaudo() {
+        String sql =
+                "SELECT " +
+                        "    p.idProducto, " +
+                        "    p.nombre, " +
+                        "    p.valor, " +
+                        "    SUM(fp.cantidad * p.valor) AS recaudacion_total " +
+                        "FROM Producto p " +
+                        "INNER JOIN Factura_Producto fp ON p.idProducto = fp.idProducto " +
+                        "GROUP BY p.idProducto, p.nombre, p.valor " +
+                        "ORDER BY recaudacion_total DESC " +
+                        "LIMIT 1";
+
+        try (Connection conn = DatabaseConnection.getMySQLConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return new ProductoRecaudacion(
+                        rs.getInt("idProducto"),
+                        rs.getString("nombre"),
+                        rs.getFloat("valor"),
+                        rs.getFloat("recaudacion_total")
+                );
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            System.err.println("Error obteniendo producto con mayor recaudación: " + e.getMessage());
+            return null;
+        }
     }
 }
