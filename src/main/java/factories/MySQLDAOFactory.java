@@ -1,12 +1,11 @@
 package factories;
 
 import dao.ClienteDAO;
+import dao.FacturaDAO;
+import dao.FacturaProductoDAO;
 import dao.ProductoDAO;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-
 
 public class MySQLDAOFactory extends AbstractFactory {
     private static MySQLDAOFactory instance;
@@ -30,5 +29,25 @@ public class MySQLDAOFactory extends AbstractFactory {
     @Override
     public Connection getConnection()  {
         return conn;
+    }
+
+    @Override
+    public ClienteDAO getClienteDAO() {
+        return null;
+    }
+
+    @Override
+    public ProductoDAO getProductoDAO() {
+        return null;
+    }
+
+    @Override
+    public FacturaDAO getFacturaDAO() {
+        return null;
+    }
+
+    @Override
+    public FacturaProductoDAO getFacturaProductoDAO() {
+        return null;
     }
 }

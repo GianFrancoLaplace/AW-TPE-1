@@ -2,6 +2,7 @@ package main;
 
 import dao.ClienteDAO;
 import entities.ClienteFacturacion;
+import factories.MySQLDAOFactory;
 import utils.DatabaseConnection;
 
 import java.util.List;
@@ -14,7 +15,9 @@ public class ConsultaClienteFacturacion {
         DatabaseConnection.testConnection();
         System.out.println();
 
-        List<ClienteFacturacion> clientes = ClienteDAO.getClientesOrdenadosPorFacturacion();
+        MySQLDAOFactory factory = MySQLDAOFactory.getInstance();
+        ClienteDAO clienteDAO = factory.getClienteDAO();
+        List<ClienteFacturacion> clientes = clienteDAO.getClientesOrdenadosPorFacturacion();
 
         if (clientes.isEmpty()) {
             System.out.println("No se encontraron clientes con facturas registradas.");

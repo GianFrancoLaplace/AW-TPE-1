@@ -8,8 +8,10 @@ import entities.Cliente;
 import entities.Producto;
 import entities.Factura;
 import entities.FacturaProducto;
+import factories.MySQLDAOFactory;
 import utils.CSVReader;
 import utils.DatabaseConnection;
+import factories.MySQLClienteDAO;
 
 import java.util.List;
 
@@ -45,8 +47,11 @@ public class DataLoader {
         List<Cliente> clientes = CSVReader.readClientes();
 
         if (!clientes.isEmpty()) {
-            ClienteDAO.insertClientes(clientes);
-            System.out.println("Total clientes en base: " + ClienteDAO.countClientes());
+            MySQLDAOFactory factory = MySQLDAOFactory.getInstance();
+            ClienteDAO clienteDAO = factory.getClienteDAO();
+
+            clienteDAO.insertClientes(clientes);
+            System.out.println("Total clientes en base: " + clienteDAO.countClientes());
         } else {
             System.out.println("No se pudieron leer clientes del CSV");
         }
@@ -60,8 +65,10 @@ public class DataLoader {
         List<Producto> productos = CSVReader.readProductos();
 
         if (!productos.isEmpty()) {
-            ProductoDAO.insertProductos(productos);
-            System.out.println("Total productos en base: " + ProductoDAO.countProductos());
+            MySQLDAOFactory factory = MySQLDAOFactory.getInstance();
+            ProductoDAO productoDAO = factory.getProductoDAO();
+            productoDAO.insertProductos(productos);
+            System.out.println("Total productos en base: " + productoDAO.countProductos());
         } else {
             System.out.println("No se pudieron leer productos del CSV");
         }
@@ -75,8 +82,10 @@ public class DataLoader {
         List<Factura> facturas = CSVReader.readFacturas();
 
         if (!facturas.isEmpty()) {
-            FacturaDAO.insertFacturas(facturas);
-            System.out.println("Total facturas en base: " + FacturaDAO.countFacturas());
+            MySQLDAOFactory factory = MySQLDAOFactory.getInstance();
+            FacturaDAO facturaDAO = factory.getFacturaDAO();
+            facturaDAO.insertFacturas(facturas);
+            System.out.println("Total facturas en base: " + facturaDAO.countFacturas());
         } else {
             System.out.println("No se pudieron leer facturas del CSV");
         }
@@ -90,8 +99,11 @@ public class DataLoader {
         List<FacturaProducto> facturasProductos = CSVReader.readFacturasProductos();
 
         if (!facturasProductos.isEmpty()) {
-            FacturaProductoDAO.insertFacturasProductos(facturasProductos);
-            System.out.println("Total relaciones en base: " + FacturaProductoDAO.countFacturasProductos());
+            MySQLDAOFactory factory = MySQLDAOFactory.getInstance();
+            FacturaProductoDAO facturaProductoDAO = factory.getFacturaProductoDAO();
+
+            facturaProductoDAO.insertFacturasProductos(facturasProductos);
+            System.out.println("Total relaciones en base: " + facturaProductoDAO.countFacturasProductos());
         } else {
             System.out.println("No se pudieron leer facturas-productos del CSV");
         }
@@ -100,11 +112,17 @@ public class DataLoader {
     }
 
     private static void showDatabaseStatus(String titulo) {
+        MySQLDAOFactory factory = MySQLDAOFactory.getInstance();
+        ClienteDAO clienteDAO = factory.getClienteDAO();
+        ProductoDAO productoDAO = factory.getProductoDAO();
+        FacturaDAO facturaDAO = factory.getFacturaDAO();
+        FacturaProductoDAO facturaProductoDAO = factory.getFacturaProductoDAO();
+
         System.out.println("=== " + titulo + " ===");
-        System.out.println("   Clientes: " + ClienteDAO.countClientes());
-        System.out.println("   Productos: " + ProductoDAO.countProductos());
-        System.out.println("   Facturas: " + FacturaDAO.countFacturas());
-        System.out.println("   Relaciones: " + FacturaProductoDAO.countFacturasProductos());
+        System.out.println("   Clientes: " + clienteDAO.countClientes());
+        System.out.println("   Productos: " + productoDAO.countProductos());
+        System.out.println("   Facturas: " + facturaDAO.countFacturas());
+        System.out.println("   Relaciones: " + facturaProductoDAO.countFacturasProductos());
         System.out.println();
     }
 }
