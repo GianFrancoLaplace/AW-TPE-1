@@ -11,6 +11,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class MySQLFacturaDAO implements FacturaDAO {
+    private Connection connection;
+
+    public MySQLFacturaDAO(Connection connection) {
+        this.connection = connection;
+    }
+
     public void insertFacturas(List<Factura> facturas) {
         if (facturas == null || facturas.isEmpty()) {
             System.out.println("Lista de facturas vacía");

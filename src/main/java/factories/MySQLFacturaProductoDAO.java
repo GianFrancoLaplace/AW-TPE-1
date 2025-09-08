@@ -12,6 +12,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class MySQLFacturaProductoDAO implements FacturaProductoDAO {
+    private Connection connection;
+
+    public MySQLFacturaProductoDAO(Connection connection) {
+        this.connection = connection;
+    }
+
     public void insertFacturasProductos(List<FacturaProducto> facturasProductos) {
         if (facturasProductos == null || facturasProductos.isEmpty()) {
             System.out.println("Lista de facturas-productos vacía");

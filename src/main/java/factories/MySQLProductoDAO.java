@@ -12,6 +12,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class MySQLProductoDAO implements ProductoDAO {
+    private Connection connection;
+
+    public MySQLProductoDAO(Connection connection) {
+        this.connection = connection;
+    }
+
     public void insertProductos(List<Producto> productos) {
         if (productos == null || productos.isEmpty()) {
             System.out.println("Lista de productos vacía");

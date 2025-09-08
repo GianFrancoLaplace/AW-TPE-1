@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySQLClienteDAO implements ClienteDAO {
+    private Connection connection;
+
+    public MySQLClienteDAO(Connection connection) {
+        this.connection = connection;
+    }
 
     @Override
     public void insertClientes(List<Cliente> clientes) {
