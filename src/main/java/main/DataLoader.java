@@ -11,7 +11,6 @@ import entities.FacturaProducto;
 import factories.MySQLDAOFactory;
 import utils.CSVReader;
 import utils.DatabaseConnection;
-import factories.MySQLClienteDAO;
 
 import java.util.List;
 

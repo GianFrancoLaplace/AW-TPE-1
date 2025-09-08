@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String MYSQL_URL = "jdbc:mysql://localhost:3306/arquitecturas";
+    private static final String MYSQL_URL = "jdbc:mysql://localhost:3306/Entregable1";
     private static final String MYSQL_USER = "root";
     private static final String MYSQL_PASSWORD = "";
 

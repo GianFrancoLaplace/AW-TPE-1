@@ -7,7 +7,7 @@ import java.sql.Statement;
 public class SchemaCreator {
 
     public static void createSchema() {
-        System.out.println("🏗️ Creando esquema de base de datos...");
+        System.out.println("Creando esquema de base de datos...");
 
         try (Connection conn = DatabaseConnection.getMySQLConnection();
              Statement stmt = conn.createStatement()) {

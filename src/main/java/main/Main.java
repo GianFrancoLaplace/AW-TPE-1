@@ -9,7 +9,7 @@ public class Main {
         System.out.println();
 
         // Elimina esquema de DB, descomentar si ya fue creada
-        // SchemaCreator.dropSchema();
+         SchemaCreator.dropSchema();
 
         SchemaCreator.createSchema();
         System.out.println();
