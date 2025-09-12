@@ -1,16 +1,17 @@
 package factories;
 
-import dao.ClienteDAO;
-import dao.FacturaDAO;
-import dao.FacturaProductoDAO;
-import dao.ProductoDAO;
+import dao.*;
+import utils.HelperMySQL;
 
-import java.sql.Connection;
+import java.sql.SQLException;
 
 public class MySQLDAOFactory extends AbstractFactory {
     private static MySQLDAOFactory instance;
+    private HelperMySQL helper;
 
-    private static Connection conn;
+    public MySQLDAOFactory() {
+        this.helper = new HelperMySQL();
+    }
 
     public static MySQLDAOFactory getInstance(){
         if(instance==null){
@@ -20,27 +21,22 @@ public class MySQLDAOFactory extends AbstractFactory {
     }
 
     @Override
-    public Connection getConnection()  {
-        return conn;
+    public MySQLClienteDAO getClienteDAO() throws SQLException {
+        return MySQLClienteDAO.getInstance(helper.getConnection());
     }
 
     @Override
-    public ClienteDAO getClienteDAO() {
-        return new MySQLClienteDAO(conn);
+    public MySQLProductoDAO getProductoDAO() throws SQLException{
+        return MySQLProductoDAO.getInstance(helper.getConnection());
     }
 
     @Override
-    public ProductoDAO getProductoDAO() {
-        return new MySQLProductoDAO(conn);
+    public MySQLFacturaDAO getFacturaDAO() throws SQLException{
+        return MySQLFacturaDAO.getInstance(helper.getConnection());
     }
 
     @Override
-    public FacturaDAO getFacturaDAO() {
-        return new MySQLFacturaDAO(conn);
-    }
-
-    @Override
-    public FacturaProductoDAO getFacturaProductoDAO() {
-        return new MySQLFacturaProductoDAO(conn);
+    public MySQLFacturaProductoDAO getFacturaProductoDAO()throws SQLException {
+        return MySQLFacturaProductoDAO.getInstance(helper.getConnection());
     }
 }

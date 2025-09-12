@@ -5,20 +5,19 @@ import dao.FacturaDAO;
 import dao.FacturaProductoDAO;
 import dao.ProductoDAO;
 
-import java.sql.Connection;
+import java.sql.SQLException;
+
 
 public abstract class AbstractFactory {
-    public static final int MYSQL_JDBC = 1;
+    public static AbstractFactory getInstance() {
+        return MySQLDAOFactory.getInstance();
+    }
 
+    public abstract ClienteDAO getClienteDAO() throws SQLException;
 
-    public abstract Connection getConnection();
+    public abstract ProductoDAO getProductoDAO() throws SQLException;
 
+    public abstract FacturaDAO getFacturaDAO() throws SQLException;
 
-    public abstract ClienteDAO getClienteDAO();
-
-    public abstract ProductoDAO getProductoDAO();
-
-    public abstract FacturaDAO getFacturaDAO();
-
-    public abstract FacturaProductoDAO getFacturaProductoDAO();
+    public abstract FacturaProductoDAO getFacturaProductoDAO() throws SQLException;
 }
