@@ -21,22 +21,7 @@ public class MySQLDAOFactory extends AbstractFactory {
     }
 
     @Override
-    public MySQLClienteDAO getClienteDAO() throws SQLException {
-        return MySQLClienteDAO.getInstance(helper.getConnection());
-    }
-
-    @Override
-    public MySQLProductoDAO getProductoDAO() throws SQLException{
-        return MySQLProductoDAO.getInstance(helper.getConnection());
-    }
-
-    @Override
-    public MySQLFacturaDAO getFacturaDAO() throws SQLException{
-        return MySQLFacturaDAO.getInstance(helper.getConnection());
-    }
-
-    @Override
-    public MySQLFacturaProductoDAO getFacturaProductoDAO()throws SQLException {
-        return MySQLFacturaProductoDAO.getInstance(helper.getConnection());
+    public EstudianteDAO getEstudiante() throws SQLException {
+        return MySQLEstudianteDAO.getInstance(helper.getConnection());
     }
 }

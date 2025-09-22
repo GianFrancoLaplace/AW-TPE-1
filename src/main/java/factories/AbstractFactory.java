@@ -1,9 +1,6 @@
 package factories;
 
-import dao.ClienteDAO;
-import dao.FacturaDAO;
-import dao.FacturaProductoDAO;
-import dao.ProductoDAO;
+import dao.EstudianteDAO;
 
 import java.sql.SQLException;
 
@@ -13,11 +10,5 @@ public abstract class AbstractFactory {
         return MySQLDAOFactory.getInstance();
     }
 
-    public abstract ClienteDAO getClienteDAO() throws SQLException;
-
-    public abstract ProductoDAO getProductoDAO() throws SQLException;
-
-    public abstract FacturaDAO getFacturaDAO() throws SQLException;
-
-    public abstract FacturaProductoDAO getFacturaProductoDAO() throws SQLException;
+    public abstract EstudianteDAO getEstudiante() throws SQLException;
 }

@@ -1,10 +1,8 @@
 package dao;
 
-import dto.ProductoRecaudacionDTO;
-import entities.FacturaProducto;
-import java.util.List;
+import dto.CarreraDTO;
 
 public interface FacturaProductoDAO {
-    ProductoRecaudacionDTO productoMasRecaudado();
+    CarreraDTO productoMasRecaudado();
     int countFacturasProductos();
 }

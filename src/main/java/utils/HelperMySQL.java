@@ -1,7 +1,5 @@
 package utils;
 
-import entities.FacturaProducto;
-import entities.Producto;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -10,13 +8,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.*;
-import java.util.List;
 
 public class HelperMySQL {
     private Connection conn = null;
 
+    public Connection getConnection() throws SQLException {
+        return this.conn;
+    }
+
     public HelperMySQL() {
-        String url = "jdbc:mysql://localhost:3306/Entregable1";
+        String url = "jdbc:mysql://localhost:3306/entregable2";
         String driver = "com.mysql.cj.jdbc.Driver";
         try {
             Class.forName(driver).getDeclaredConstructor().newInstance();
@@ -27,95 +28,109 @@ public class HelperMySQL {
 
         try {
             conn = DriverManager.getConnection(url,"root","");
-            conn.setAutoCommit(false);//transacciones manuales
+            conn.setAutoCommit(false);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public Connection getConnection() throws SQLException {
-        return this.conn;
-    }
+    public void insertEstudiante() throws IOException {
+        String path = "src/main/resources/estudiantes.csv";
+        System.out.println("Insertando estudiantes desde: " + path);
 
-    public void insertProductos() throws IOException {
-        String path = "src/main/resources/productos.csv";
-
+        int contador = 0;
         try (Reader in = new FileReader(path);
              CSVParser csvParser = CSVFormat.EXCEL.withHeader().parse(in)) {
 
             for (CSVRecord row : csvParser) {
-                String query = "INSERT INTO producto (idProducto, nombre, valor) VALUES (?,?,?)";
-                try (PreparedStatement ps = conn.prepareStatement(query)) {
-                    ps.setInt(1, Integer.parseInt(row.get(0)));
-                    ps.setString(2, row.get(1));
-                    ps.setFloat(3, Float.parseFloat(row.get(2)));
-                    ps.executeUpdate();
-                }
-            }
-            this.conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void insertFacturasProductos() throws IOException {
-        String path = "src/main/resources/facturas-productos.csv";
-
-        try (Reader in = new FileReader(path);
-             CSVParser csvParser = CSVFormat.EXCEL.withHeader().parse(in)) {
-
-            for (CSVRecord row : csvParser) {
-                String query = "INSERT INTO factura_producto (idFactura, idProducto, cantidad) VALUES (?,?,?)";
-                try (PreparedStatement ps = conn.prepareStatement(query)) {
-                    ps.setInt(1, Integer.parseInt(row.get(0)));
-                    ps.setInt(2, Integer.parseInt(row.get(1)));
-                    ps.setInt(3, Integer.parseInt(row.get(2)));
-                    ps.executeUpdate();
-                }
-            }
-            this.conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void insertCliente() throws IOException {
-        String path = "src/main/resources/clientes.csv";
-
-        try (Reader in = new FileReader(path);
-             CSVParser csvParser = CSVFormat.EXCEL.withHeader().parse(in)) {
-
-            for (CSVRecord row : csvParser) {
-                String query = "INSERT INTO cliente (idCliente, nombre, email) VALUES (?,?,?)";
+                String query = "INSERT INTO estudiante (id_estudiante, nombre, apellido, edad, genero, ciudad, LU) VALUES (?,?,?,?,?,?,?)";
                 try (PreparedStatement ps = conn.prepareStatement(query)) {
                     ps.setInt(1, Integer.parseInt(row.get(0)));
                     ps.setString(2, row.get(1));
                     ps.setString(3, row.get(2));
+                    ps.setInt(4, Integer.parseInt(row.get(3)));
+                    ps.setString(5, row.get(4));
+                    ps.setString(6, row.get(5));
+                    ps.setInt(7, Integer.parseInt(row.get(6)));
                     ps.executeUpdate();
+                    contador++;
                 }
             }
             this.conn.commit();
+            System.out.println("Estudiantes insertados: " + contador);
         } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
             e.printStackTrace();
         }
     }
 
-    public void insertFactura() throws IOException {
-        String path = "src/main/resources/facturas.csv";
+    public void insertCarrera() throws IOException {
+        String path = "src/main/resources/carreras.csv";
+        System.out.println("Insertando carreras desde: " + path);
 
+        int contador = 0;
         try (Reader in = new FileReader(path);
              CSVParser csvParser = CSVFormat.EXCEL.withHeader().parse(in)) {
-
             for (CSVRecord row : csvParser) {
-                String query = "INSERT INTO factura (idFactura, idCliente) VALUES (?,?)";
+                String query = "INSERT INTO carrera (id_carrera, carrera, duracion) VALUES (?,?,?)";
                 try (PreparedStatement ps = conn.prepareStatement(query)) {
                     ps.setInt(1, Integer.parseInt(row.get(0)));
-                    ps.setInt(2, Integer.parseInt(row.get(1)));
+                    ps.setString(2, row.get(1));
+                    ps.setInt(3, Integer.parseInt(row.get(2)));
                     ps.executeUpdate();
+                    contador++;
                 }
             }
             this.conn.commit();
-        } catch (SQLException e) {
+            System.out.println("Carreras insertadas: " + contador);
+        }
+        catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+            e.printStackTrace();
+        }
+    }
+
+    public void insertEstudiateCarrera() throws IOException {
+        String path = "src/main/resources/estudianteCarrera.csv";
+        System.out.println("Insertando estudiante-carrera desde: " + path);
+        int contador = 0;
+
+        try (Reader in = new FileReader(path);
+             CSVParser csvParser = CSVFormat.EXCEL.withHeader().parse(in)) {
+            for (CSVRecord row : csvParser) {
+                try {
+                    String query = "INSERT INTO estudianteCarrera (id, id_estudiante, id_carrera, inscripcion, graduacion, antiguedad) VALUES (?,?,?,?,?,?)";
+                    try (PreparedStatement ps = conn.prepareStatement(query)) {
+                        ps.setInt(1, Integer.parseInt(row.get(0)));
+                        ps.setInt(2, Integer.parseInt(row.get(1)));
+                        ps.setInt(3, Integer.parseInt(row.get(2)));
+                        ps.setInt(4, Integer.parseInt(row.get(3)));
+                        ps.setInt(5, Integer.parseInt(row.get(4)));
+                        ps.setInt(6, Integer.parseInt(row.get(5)));
+                        ps.executeUpdate();
+                        contador++;
+                    }
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            this.conn.commit();
+            System.out.println("Carreras insertadas: " + contador);
+        }
+        catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
             e.printStackTrace();
         }
     }
@@ -126,54 +141,50 @@ public class HelperMySQL {
         try {
             Statement stmt = conn.createStatement();
 
-            String createCliente = "CREATE TABLE cliente (" +
-                    "idCliente INTEGER NOT NULL PRIMARY KEY, " +
+            String createCarrera = "CREATE TABLE carrera (" +
+                    "id_carrera INTEGER NOT NULL PRIMARY KEY," +
+                    "carrera VARCHAR(500)," +
+                    "duracion INTEGER" +
+                    ")";
+
+            String createEstudiante = "CREATE TABLE estudiante (" +
+                    "id_estudiante INTEGER NOT NULL PRIMARY KEY, " +
                     "nombre VARCHAR(500), " +
-                    "email VARCHAR(150)" +
+                    "apellido VARCHAR(150)," +
+                    "edad INTEGER," +
+                    "genero VARCHAR(150)," +
+                    "ciudad VARCHAR(150)," +
+                    "LU INTEGER" +
                     ")";
 
-            String createProducto = "CREATE TABLE producto (" +
-                    "idProducto INTEGER NOT NULL PRIMARY KEY, " +
-                    "nombre VARCHAR(45), " +
-                    "valor FLOAT" +
+            String createEstudianteCarrera = "CREATE TABLE estudianteCarrera (" +
+                    "id INTEGER NOT NULL PRIMARY KEY, " +
+                    "id_estudiante INTEGER, " +
+                    "id_carrera INTEGER, " +
+                    "inscripcion INTEGER, " +
+                    "graduacion INTEGER, " +
+                    "antiguedad INTEGER, " +
+                    "FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante)," +
+                    "FOREIGN KEY (id_carrera) REFERENCES carrera(id_carrera)" +
                     ")";
 
-            String createFactura = "CREATE TABLE factura (" +
-                    "idFactura INTEGER NOT NULL PRIMARY KEY, " +
-                    "idCliente INTEGER, " +
-                    "FOREIGN KEY (idCliente) REFERENCES cliente(idCliente)" +
-                    ")";
+            stmt.executeUpdate(createCarrera);
+            System.out.println("Tabla Carrera creada");
 
-            String createFacturaProducto = "CREATE TABLE factura_producto (" +
-                    "idFactura INTEGER, " +
-                    "idProducto INTEGER, " +
-                    "cantidad INTEGER, " +
-                    "PRIMARY KEY (idFactura, idProducto), " +
-                    "FOREIGN KEY (idFactura) REFERENCES factura(idFactura), " +
-                    "FOREIGN KEY (idProducto) REFERENCES producto(idProducto)" +
-                    ")";
+            stmt.executeUpdate(createEstudiante);
+            System.out.println("Tabla Estudiante creada");
 
-            stmt.executeUpdate(createCliente);
-            System.out.println("Tabla Cliente creada");
-
-            stmt.executeUpdate(createProducto);
-            System.out.println(" Tabla Producto creada");
-
-            stmt.executeUpdate(createFactura);
-            System.out.println("Tabla Factura creada");
-
-            stmt.executeUpdate(createFacturaProducto);
-            System.out.println("Tabla Factura_Producto creada");
+            stmt.executeUpdate(createEstudianteCarrera);
+            System.out.println("Tabla CarreraEstudiante creada");
 
             this.conn.commit();
             System.out.println("Esquema creado exitosamente!");
 
         } catch (SQLException e) {
-            System.out.println("Error creando esquema: " + e.getMessage());
-
-            // Diagnóstico específico
             if (e.getMessage().contains("already exists")) {
                 System.out.println("Las tablas ya existen. Usa dropSchema() primero si quieres recrearlas");
+            } else {
+                System.out.println("Error creando esquema: " + e.getMessage());
             }
         }
     }
@@ -184,10 +195,9 @@ public class HelperMySQL {
         try {
             Statement stmt = conn.createStatement();
             // Orden importante: eliminar dependencias primero
-            stmt.executeUpdate("DROP TABLE IF EXISTS Factura_Producto");
-            stmt.executeUpdate("DROP TABLE IF EXISTS Factura");
-            stmt.executeUpdate("DROP TABLE IF EXISTS Producto");
-            stmt.executeUpdate("DROP TABLE IF EXISTS Cliente");
+            stmt.executeUpdate("DROP TABLE IF EXISTS estudianteCarrera");
+            stmt.executeUpdate("DROP TABLE IF EXISTS estudiante");
+            stmt.executeUpdate("DROP TABLE IF EXISTS carrera");
             this.conn.commit();
             System.out.println("Esquema eliminado");
 
@@ -196,4 +206,3 @@ public class HelperMySQL {
         }
     }
 }
-

@@ -1,11 +1,15 @@
-package dto;
+package entities;
 
-public class ProductoRecaudacionDTO {
+public class Carrera {
     private int idProducto;
     private String nombre;
     private float recaudacionTotal;
 
-    public ProductoRecaudacionDTO(int idProducto, String nombre, float recaudacionTotal) {
+    public Carrera() {
+        super();
+    }
+
+    public Carrera(int idProducto, String nombre, float recaudacionTotal) {
         this.idProducto = idProducto;
         this.nombre = nombre;
         this.recaudacionTotal = recaudacionTotal;
