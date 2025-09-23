@@ -1,18 +1,21 @@
 package main;
 
-import utils.HelperMySQL;
-import java.io.IOException;
-import java.sql.SQLException;
+import dto.*;
+import entities.*;
+import jakarta.persistence.*;
+import repository.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException, SQLException {
-        HelperMySQL helperMySQL = new HelperMySQL();
+    public static void main(String[] args) {
+        EstudianteRepositoryImpl er = new EstudianteRepositoryImpl();
+        CarreraRepositoryImpl cr = new CarreraRepositoryImpl();
+        MatriculaRepositoryImpl mr = new MatriculaRepositoryImpl();
 
-        helperMySQL.dropSchema();
+        //cargar datos
+        er.insertarDesdeCSV("src/main/resources/estudiantes.csv");
+        cr.insertarDesdeCSV("src/main/resources/carreras.csv");
+        er.addEstudiante(6397408,"A","B",22,"M","tandil",6397408);
+        mr.insertarDesdeCSV("src/main/resources/estudianteCarrera.csv");
 
-        helperMySQL.createSchema();
-        helperMySQL.insertCarrera();
-        helperMySQL.insertEstudiante();
-        helperMySQL.insertEstudiateCarrera();
     }
 }

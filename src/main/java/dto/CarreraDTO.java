@@ -1,38 +1,13 @@
 package dto;
 
+import lombok.*;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class CarreraDTO {
-    private int idProducto;
+    private int id;
     private String nombre;
-    private float recaudacionTotal;
-
-    public CarreraDTO() {
-        super();
-    }
-
-    public CarreraDTO(int idProducto, String nombre, float recaudacionTotal) {
-        this.idProducto = idProducto;
-        this.nombre = nombre;
-        this.recaudacionTotal = recaudacionTotal;
-    }
-
-    public int getIdProducto() {
-        return idProducto;
-    }
-
-
-    public String getNombre() {
-        return nombre;
-    }
-
-
-    public float getRecaudacionTotal() {
-        return recaudacionTotal;
-    }
-
-
-    @Override
-    public String toString() {
-        return String.format("Producto ID: %d\nNombre: %s\nRecaudación total: $%.2f",
-                idProducto, nombre,recaudacionTotal);
-    }
+    private int duracion;
 }

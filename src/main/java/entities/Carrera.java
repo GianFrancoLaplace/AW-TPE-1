@@ -1,38 +1,25 @@
 package entities;
 
+import jakarta.persistence.*;
+import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
+
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "carrera")
 public class Carrera {
-    private int idProducto;
+
+    @Id
+    private int id;
+
     private String nombre;
-    private float recaudacionTotal;
+    private int duracion;
 
-    public Carrera() {
-        super();
-    }
-
-    public Carrera(int idProducto, String nombre, float recaudacionTotal) {
-        this.idProducto = idProducto;
-        this.nombre = nombre;
-        this.recaudacionTotal = recaudacionTotal;
-    }
-
-    public int getIdProducto() {
-        return idProducto;
-    }
-
-
-    public String getNombre() {
-        return nombre;
-    }
-
-
-    public float getRecaudacionTotal() {
-        return recaudacionTotal;
-    }
-
-
-    @Override
-    public String toString() {
-        return String.format("Producto ID: %d\nNombre: %s\nRecaudación total: $%.2f",
-                idProducto, nombre,recaudacionTotal);
-    }
+    @OneToMany(mappedBy = "carrera", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Matricula> matriculas = new ArrayList<>();
 }
