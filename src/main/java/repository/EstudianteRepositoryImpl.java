@@ -7,6 +7,7 @@ import entities.Estudiante;
 import entities.Matricula;
 import factory.JPAUtil;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import java.io.FileReader;
 import java.util.List;
@@ -86,6 +87,18 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
     //e) recuperar todos los estudiantes, en base a su género.
     @Override
     public List<EstudianteDTO> buscarEstudiantesPorGenero(String genero) {
+        EntityManager em = JPAUtil.getEntityManager();
+        List estudianteDTOS;
+        try{
+
+            Query query = em.createQuery(
+                    "SELECT e FROM Estudiante e WHERE e.genero = :genero"
+            );
+            estudianteDTOS = query.getResultList();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return List.of();
     }
 
