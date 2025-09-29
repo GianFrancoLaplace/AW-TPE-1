@@ -17,6 +17,6 @@ public class Main {
         er.addEstudiante(6397408,"A","B",22,"M","tandil",6397408);
         mr.insertarDesdeCSV("src/main/resources/estudianteCarrera.csv");
         er.buscarEstudiantesOrdenadosPor("edad");
-        er.buscarEstudiantePorLU(1);
+        er.buscarEstudiantePorLU(6397408);
     }
 }

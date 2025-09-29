@@ -53,8 +53,6 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
     //a) dar de alta un estudiante
     @Override
     public void addEstudiante(int id, String nombre, String apellido, int edad, String genero, String ciudad, int LU) {
-        EntityManager em = JPAUtil.getEntityManager();
-
         try {
             em.getTransaction().begin();
 
@@ -74,21 +72,24 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
         } catch (Exception e) {
             em.getTransaction().rollback();
             e.printStackTrace();
-        } finally {
-            em.close();
         }
     }
 
     //c) recuperar todos los estudiantes, y especificar algún criterio de ordenamiento simple
     @Override
-    public List<EstudianteDTO> buscarEstudiantesOrdenadosPor(String atributo) {
-        String jpql = "SELECT e FROM Estudiante e ORDER BY e." + atributo + " DESC";
-        List<Estudiante> estudiantes = em.createQuery(jpql, Estudiante.class)
-                .getResultList();
+    public List<EstudianteDTO> buscarEstudiantesOrdenadosPor(String genero) {
+        try {
+            return (List<EstudianteDTO>) em.createQuery(
+                    "SELECT new dto.EstudianteDTO(e.id, e.nombre, e.apellido, e.edad, e.genero, e.ciudad, e.documento, e.LU)" +
+                            "FROM Estudiante e " +
+                            "WHERE e.genero = :genero",
+                    EstudianteDTO.class
+            ).setParameter("genero", genero).getResultList();
 
-        return estudiantes.stream()
-                .map(EstudianteDTO::new)
-                .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.out.println("Error al buscar estudiantes: " + e.getMessage());
+            return new ArrayList<>(); // Retorna lista vacía en lugar de null
+        }
     }
 
     //d) recuperar un estudiante, en base a su número de libreta universitaria.
