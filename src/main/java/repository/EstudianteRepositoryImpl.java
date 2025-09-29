@@ -9,9 +9,17 @@ import factory.JPAUtil;
 import jakarta.persistence.EntityManager;
 
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EstudianteRepositoryImpl implements EstudianteRepository {
+    private EntityManager em;
+
+    public EstudianteRepositoryImpl() {
+        this.em = JPAUtil.getEntityManager();
+    }
+
     @Override
     public void insertarDesdeCSV(String rutaArchivo) {
         EntityManager em = JPAUtil.getEntityManager();
@@ -74,24 +82,63 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
     //c) recuperar todos los estudiantes, y especificar algún criterio de ordenamiento simple
     @Override
     public List<EstudianteDTO> buscarEstudiantesOrdenadosPor(String atributo) {
-        return List.of();
+        String jpql = "SELECT e FROM Estudiante e ORDER BY e." + atributo + " DESC";
+        List<Estudiante> estudiantes = em.createQuery(jpql, Estudiante.class)
+                .getResultList();
+
+        return estudiantes.stream()
+                .map(EstudianteDTO::new)
+                .collect(Collectors.toList());
     }
 
     //d) recuperar un estudiante, en base a su número de libreta universitaria.
     @Override
-    public EstudianteDTO buscarEstudiantesPorLU(int LU) {
-        return null;
+    public EstudianteDTO buscarEstudiantePorLU(int LU) {
+        String jpql = "SELECT e FROM Estudiante e WHERE e.LU = :LU";
+
+        try {
+            Estudiante estudiante = em.createQuery(jpql, Estudiante.class)
+                    .setParameter("LU", LU)
+                    .getSingleResult();
+
+            return new EstudianteDTO(estudiante);
+
+        } catch (Error e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
     }
 
     //e) recuperar todos los estudiantes, en base a su género.
     @Override
     public List<EstudianteDTO> buscarEstudiantesPorGenero(String genero) {
-        return List.of();
+//        try {
+//            return (List<EstudianteDTO>) em.createQuery(
+//                    "SELECT new dto.EstudianteDTO(e.id, e.nombre, e.apellido, e.edad, e.genero, e.ciudad, e.documento, e.LU) FROM Estudiante e WHERE e.genero = :genero",
+//                    EstudianteDTO.class
+//            );
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//             return null;
+//        }
+        return null;
+
     }
 
     //g) recuperar los estudiantes de una determinada carrera, filtrado por ciudad de residencia
     @Override
-    public List<EstudianteDTO> buscarEstudiantesPorCarreraYCiudad(int id_carrera, int id_ciudad) {
-        return List.of();
+    public List<EstudianteDTO> buscarEstudiantesPorCarreraYCiudad(String carrera, String ciudad) {
+        try {
+            return (List<EstudianteDTO>) em.createQuery(
+                    "SELECT new dto.EstudianteDTO(e.id, e.nombre, e.apellido, e.edad, e.genero, e.ciudad, e.documento, e.LU)" +
+                            "FROM Matricula m JOIN Estudiante e " +
+                            "WHERE e.ciudad = :ciudad AND m.carrera.nombre = :carrera",
+                    EstudianteDTO.class
+            ).setParameter("ciudad", carrera).setParameter("ciudad", ciudad).getResultList();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 }

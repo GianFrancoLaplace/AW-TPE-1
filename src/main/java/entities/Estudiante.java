@@ -21,6 +21,8 @@ public class Estudiante {
     private int edad;
     private String genero;
     private String ciudad;
+    private int documento;
+    private int nroLibreta;
     //AK
     @Column(name = "LU")
     private int LU;
