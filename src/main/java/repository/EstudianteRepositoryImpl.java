@@ -118,19 +118,19 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
         List estudianteDTOS;
         try{
 
-            Query query = em.createQuery(
+            return (List<EstudianteDTO>) em.createQuery(
                     "SELECT e FROM Estudiante e WHERE e.genero = :genero"
-            );
-            estudianteDTOS = query.getResultList();
-            for (Object e: estudianteDTOS ){
-                EstudianteDTO estudianteDTO  = (EstudianteDTO) e;
-                System.out.println(estudianteDTO.getApellido()+estudianteDTO.getGenero());
-            }
-            em.close();
+            ).setParameter("genero", genero).getResultList();
+
+//            for (Object e: estudianteDTOS ){
+//                EstudianteDTO estudianteDTO  = (EstudianteDTO) e;
+//                System.out.println(estudianteDTO.getApellido()+estudianteDTO.getGenero());
+//            }
+//            em.close();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return List.of();
     }
 
     //g) recuperar los estudiantes de una determinada carrera, filtrado por ciudad de residencia
