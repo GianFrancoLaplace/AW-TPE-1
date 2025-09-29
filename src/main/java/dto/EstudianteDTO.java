@@ -27,4 +27,8 @@ public class EstudianteDTO {
         this.documento = e.getDocumento();
         this.nroLibreta = e.getNroLibreta();
     }
+
+    public String toString(){
+        return genero + " " + apellido + " " + edad + " " + ciudad + " " + documento;
+    }
 }
