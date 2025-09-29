@@ -1,8 +1,5 @@
 package main;
 
-import dto.*;
-import entities.*;
-import jakarta.persistence.*;
 import repository.*;
 
 public class Main {
@@ -14,10 +11,10 @@ public class Main {
         //cargar datos
         er.insertarDesdeCSV("src/main/resources/estudiantes.csv");
         cr.insertarDesdeCSV("src/main/resources/carreras.csv");
-        er.addEstudiante(6397408,"A","B",22,"M","tandil",6397408);
+//        er.addEstudiante(6397408,"A","B",22,"M","tandil",6397408);
         mr.insertarDesdeCSV("src/main/resources/estudianteCarrera.csv");
         er.buscarEstudiantesPorGenero("male");
-        er.buscarEstudiantesOrdenadosPor("edad");
-        er.buscarEstudiantePorLU(1);
+//        er.buscarEstudiantesOrdenadosPor("edad");
+//        er.buscarEstudiantePorLU(1);
     }
 }
