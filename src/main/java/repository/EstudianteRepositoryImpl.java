@@ -7,6 +7,7 @@ import entities.Estudiante;
 import entities.Matricula;
 import factory.JPAUtil;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -77,18 +78,20 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
 
     //c) recuperar todos los estudiantes, y especificar algún criterio de ordenamiento simple
     @Override
-    public List<EstudianteDTO> buscarEstudiantesOrdenadosPor(String genero) {
+    public List<EstudianteDTO> buscarEstudiantesOrdenadosPor(String atributo) {
+        System.out.println("buscarEstudiantesOrdenadosPor: " + atributo);
         try {
+            System.out.println("ESTOY EN EL TRY");
             return (List<EstudianteDTO>) em.createQuery(
                     "SELECT new dto.EstudianteDTO(e.id, e.nombre, e.apellido, e.edad, e.genero, e.ciudad, e.documento, e.LU)" +
                             "FROM Estudiante e " +
-                            "WHERE e.genero = :genero",
+                            "ORDER BY e." + atributo + " ASC",
                     EstudianteDTO.class
-            ).setParameter("genero", genero).getResultList();
+            ).getResultList();
 
         } catch (Exception e) {
             System.out.println("Error al buscar estudiantes: " + e.getMessage());
-            return new ArrayList<>(); // Retorna lista vacía en lugar de null
+            return new ArrayList<>();
         }
     }
 
@@ -114,17 +117,19 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
     //e) recuperar todos los estudiantes, en base a su género.
     @Override
     public List<EstudianteDTO> buscarEstudiantesPorGenero(String genero) {
-//        try {
-//            return (List<EstudianteDTO>) em.createQuery(
-//                    "SELECT new dto.EstudianteDTO(e.id, e.nombre, e.apellido, e.edad, e.genero, e.ciudad, e.documento, e.LU) FROM Estudiante e WHERE e.genero = :genero",
-//                    EstudianteDTO.class
-//            );
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//             return null;
-//        }
-        return null;
+        EntityManager em = JPAUtil.getEntityManager();
+        List estudianteDTOS;
+        try{
 
+            Query query = em.createQuery(
+                    "SELECT e FROM Estudiante e WHERE e.genero = genero"
+            );
+            estudianteDTOS = query.getResultList();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return List.of();
     }
 
     //g) recuperar los estudiantes de una determinada carrera, filtrado por ciudad de residencia

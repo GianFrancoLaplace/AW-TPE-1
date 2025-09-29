@@ -16,6 +16,8 @@ public class Main {
         cr.insertarDesdeCSV("src/main/resources/carreras.csv");
         er.addEstudiante(6397408,"A","B",22,"M","tandil",6397408);
         mr.insertarDesdeCSV("src/main/resources/estudianteCarrera.csv");
+        er.buscarEstudiantesPorGenero("male");
+        System.out.println("ORDENO ESTUDIANTES POR EDAD: " +  er.buscarEstudiantesOrdenadosPor("edad"));
         er.buscarEstudiantesOrdenadosPor("edad");
         er.buscarEstudiantePorLU(6397408);
     }
