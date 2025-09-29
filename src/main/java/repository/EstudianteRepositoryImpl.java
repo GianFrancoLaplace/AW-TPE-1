@@ -123,9 +123,10 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
             );
             estudianteDTOS = query.getResultList();
             for (Object e: estudianteDTOS ){
-                System.out.println(e.toString());
+                EstudianteDTO estudianteDTO  = (EstudianteDTO) e;
+                System.out.println(estudianteDTO.getApellido()+estudianteDTO.getGenero());
             }
-
+            em.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
