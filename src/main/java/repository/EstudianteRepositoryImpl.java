@@ -122,6 +122,9 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
                     "SELECT e FROM Estudiante e WHERE e.genero = :genero"
             );
             estudianteDTOS = query.getResultList();
+            for (Object e: estudianteDTOS ){
+                System.out.println(e.toString());
+            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
