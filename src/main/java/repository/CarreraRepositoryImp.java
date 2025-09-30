@@ -2,14 +2,17 @@ package repository;
 
 import com.opencsv.CSVReader;
 import dto.CarreraDTO;
+
+import dto.ReporteCarreraAnioDTO;
 import entities.Carrera;
 import factory.JPAUtil;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import java.io.FileReader;
 import java.util.List;
 
-public class CarreraRepositoryImpl implements CarreraRepository{
+public class CarreraRepositoryImp implements CarreraRepository{
     @Override
     public void insertarDesdeCSV(String rutaArchivo) {
         EntityManager em = JPAUtil.getEntityManager();
@@ -43,3 +46,29 @@ public class CarreraRepositoryImpl implements CarreraRepository{
         return List.of();
     }
 }
+
+    public List<ReporteCarreraAnioDTO> getCarrerasDeManeraCronologica(){
+        EntityManager em = JPAUtil.getEntityManager();
+        em.getTransaction().begin();
+
+        try {
+            String queryInscriptos = "SELECT new dto.ReporteCarreraAnioDTO(c.id, e.id) " +
+                            "COUNT(m.inscripciones) " +
+                            "COUNT(m.egresados) " +
+                            "FROM Carrera c " +
+                            "LEFT JOIN Matricula m " +
+                            "ON c.id = m.id " +
+                            "ORDER BY c.nombre ASC, m.inscripcion ASC ";
+
+
+
+            Query query = em.createNativeQuery(queryInscriptos);
+
+            List<ReporteCarreraAnioDTO> reporteCarreraAnioDTOS = List.of();
+            reporteCarreraAnioDTOS.addAll(query.getResultList());
+            reporteCarreraAnioDTOS.addAll(query2.getResultList());
+
+            em.close();
+            return reporteCarreraAnioDTOS;
+        }
+    }

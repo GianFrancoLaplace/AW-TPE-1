@@ -10,7 +10,7 @@ public class Main {
 
         //cargar datos
         er.insertarDesdeCSV("src/main/resources/estudiantes.csv");
-        cr.insertarDesdeCSV("src/main/resources/carreras.csv");
+        //cr.insertarDesdeCSV("src/main/resources/carreras.csv");
 //        er.addEstudiante(6397408,"A","B",22,"M","tandil",6397408);
         mr.insertarDesdeCSV("src/main/resources/estudianteCarrera.csv");
         er.buscarEstudiantesPorGenero("male");
