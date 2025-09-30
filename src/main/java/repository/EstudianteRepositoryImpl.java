@@ -54,6 +54,8 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
     //a) dar de alta un estudiante
     @Override
     public void addEstudiante(int id, String nombre, String apellido, int edad, String genero, String ciudad, int LU) {
+        EntityManager em = JPAUtil.getEntityManager();
+
         try {
             em.getTransaction().begin();
 
@@ -73,24 +75,21 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
         } catch (Exception e) {
             em.getTransaction().rollback();
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     //c) recuperar todos los estudiantes, y especificar algún criterio de ordenamiento simple
     @Override
     public List<EstudianteDTO> buscarEstudiantesOrdenadosPor(String atributo) {
-        try {
-            return (List<EstudianteDTO>) em.createQuery(
-                    "SELECT new dto.EstudianteDTO(e.id, e.nombre, e.apellido, e.edad, e.genero, e.ciudad, e.documento, e.LU)" +
-                            "FROM Estudiante e " +
-                            "ORDER BY e." + atributo + " ASC",
-                    EstudianteDTO.class
-            ).getResultList();
+        String jpql = "SELECT e FROM Estudiante e ORDER BY e." + atributo + " DESC";
+        List<Estudiante> estudiantes = em.createQuery(jpql, Estudiante.class)
+                .getResultList();
 
-        } catch (Exception e) {
-            System.out.println("Error al buscar estudiantes: " + e.getMessage());
-            return new ArrayList<>();
-        }
+        return estudiantes.stream()
+                .map(EstudianteDTO::new)
+                .collect(Collectors.toList());
     }
 
     //d) recuperar un estudiante, en base a su número de libreta universitaria.
@@ -116,17 +115,23 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
     @Override
     public List<EstudianteDTO> buscarEstudiantesPorGenero(String genero) {
         EntityManager em = JPAUtil.getEntityManager();
-        List estudianteDTOS;
+        em.getTransaction().begin();
         try{
+            String queryStr = "FROM Estudiante e WHERE e.genero = :genero";
 
-            Query query = em.createQuery(
-                    "SELECT e FROM Estudiante e WHERE e.genero = genero"
-            );
-            estudianteDTOS = query.getResultList();
-            for (Object e: estudianteDTOS ){
+            Query query = em.createQuery(queryStr, Estudiante.class);
+            query.setParameter("genero", genero); // 'genero' is the String value, e.g., "male"
+            List<EstudianteDTO> estudianteDTOS = query.getResultList();
+
+            for (Object e: estudianteDTOS){
+//                EstudianteDTO estudianteDTO  = (EstudianteDTO) e;
+//                System.out.println(estudianteDTO.getApellido()+estudianteDTO.getGenero());
                 System.out.println(e.toString());
+                System.out.println();
             }
 
+            em.getTransaction().commit();
+            em.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -136,6 +141,16 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
     //g) recuperar los estudiantes de una determinada carrera, filtrado por ciudad de residencia
     @Override
     public List<EstudianteDTO> buscarEstudiantesPorCarreraYCiudad(String carrera, String ciudad) {
-        return null
+        try {
+            return (List<EstudianteDTO>) em.createQuery(
+                    "SELECT new dto.EstudianteDTO(e.id, e.nombre, e.apellido, e.edad, e.genero, e.ciudad, e.documento, e.LU)" +
+                            "FROM Matricula m JOIN Estudiante e " +
+                            "WHERE e.ciudad = :ciudad AND m.carrera.nombre = :carrera",
+                    EstudianteDTO.class
+            ).setParameter("ciudad", carrera).setParameter("ciudad", ciudad).getResultList();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 }
