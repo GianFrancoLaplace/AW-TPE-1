@@ -36,6 +36,7 @@ public class Main {
         //Prueba consigna G
         //System.out.println("MUESTRO ESTUDIANTE DE X CARRERA Y CIUDAD: ");
         //er.buscarEstudiantesPorCarreraYCiudad("Abogacia","Idvor");
+        System.out.println("---------------------");
         cr.getCarrerasDeManeraCronologica();
     }
 }
