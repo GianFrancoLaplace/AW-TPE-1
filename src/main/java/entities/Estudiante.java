@@ -29,5 +29,15 @@ public class Estudiante {
 
     @OneToMany(mappedBy = "estudiante", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Matricula> matriculas = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Estudiante{" +
+                "nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", id=" + id +
+                ", genero='" + genero + '\'' +
+                '}';
+    }
 }
 

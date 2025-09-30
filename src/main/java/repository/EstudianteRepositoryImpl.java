@@ -115,22 +115,27 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
     @Override
     public List<EstudianteDTO> buscarEstudiantesPorGenero(String genero) {
         EntityManager em = JPAUtil.getEntityManager();
-        List estudianteDTOS;
+        em.getTransaction().begin();
         try{
+            String queryStr = "FROM Estudiante e WHERE e.genero = :genero";
 
-            return (List<EstudianteDTO>) em.createQuery(
-                    "SELECT e FROM Estudiante e WHERE e.genero = :genero"
-            ).setParameter("genero", genero).getResultList();
+            Query query = em.createQuery(queryStr, Estudiante.class);
+            query.setParameter("genero", genero); // 'genero' is the String value, e.g., "male"
+            List<EstudianteDTO> estudianteDTOS = query.getResultList();
 
-//            for (Object e: estudianteDTOS ){
+            for (Object e: estudianteDTOS){
 //                EstudianteDTO estudianteDTO  = (EstudianteDTO) e;
 //                System.out.println(estudianteDTO.getApellido()+estudianteDTO.getGenero());
-//            }
-//            em.close();
+                System.out.println(e.toString());
+                System.out.println();
+            }
 
+            em.getTransaction().commit();
+            em.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        return List.of();
     }
 
     //g) recuperar los estudiantes de una determinada carrera, filtrado por ciudad de residencia
