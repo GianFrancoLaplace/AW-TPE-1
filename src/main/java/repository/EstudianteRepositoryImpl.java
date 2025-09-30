@@ -79,9 +79,7 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
     //c) recuperar todos los estudiantes, y especificar algún criterio de ordenamiento simple
     @Override
     public List<EstudianteDTO> buscarEstudiantesOrdenadosPor(String atributo) {
-        System.out.println("buscarEstudiantesOrdenadosPor: " + atributo);
         try {
-            System.out.println("ESTOY EN EL TRY");
             return (List<EstudianteDTO>) em.createQuery(
                     "SELECT new dto.EstudianteDTO(e.id, e.nombre, e.apellido, e.edad, e.genero, e.ciudad, e.documento, e.LU)" +
                             "FROM Estudiante e " +
@@ -125,6 +123,9 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
                     "SELECT e FROM Estudiante e WHERE e.genero = genero"
             );
             estudianteDTOS = query.getResultList();
+            for (Object e: estudianteDTOS ){
+                System.out.println(e.toString());
+            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -135,16 +136,6 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
     //g) recuperar los estudiantes de una determinada carrera, filtrado por ciudad de residencia
     @Override
     public List<EstudianteDTO> buscarEstudiantesPorCarreraYCiudad(String carrera, String ciudad) {
-        try {
-            return (List<EstudianteDTO>) em.createQuery(
-                    "SELECT new dto.EstudianteDTO(e.id, e.nombre, e.apellido, e.edad, e.genero, e.ciudad, e.documento, e.LU)" +
-                            "FROM Matricula m JOIN Estudiante e " +
-                            "WHERE e.ciudad = :ciudad AND m.carrera.nombre = :carrera",
-                    EstudianteDTO.class
-            ).setParameter("ciudad", carrera).setParameter("ciudad", ciudad).getResultList();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+        return null
     }
 }

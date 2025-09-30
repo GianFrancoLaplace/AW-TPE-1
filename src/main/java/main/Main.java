@@ -1,8 +1,6 @@
 package main;
 
-import dto.*;
-import entities.*;
-import jakarta.persistence.*;
+import dto.EstudianteDTO;
 import repository.*;
 
 public class Main {
@@ -17,8 +15,5 @@ public class Main {
         er.addEstudiante(6397408,"A","B",22,"M","tandil",6397408);
         mr.insertarDesdeCSV("src/main/resources/estudianteCarrera.csv");
         er.buscarEstudiantesPorGenero("male");
-        System.out.println("ORDENO ESTUDIANTES POR EDAD: " +  er.buscarEstudiantesOrdenadosPor("edad"));
-        er.buscarEstudiantesOrdenadosPor("edad");
-        er.buscarEstudiantePorLU(6397408);
     }
 }
