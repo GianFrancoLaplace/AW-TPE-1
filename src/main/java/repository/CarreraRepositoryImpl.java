@@ -12,7 +12,7 @@ import jakarta.persistence.Query;
 import java.io.FileReader;
 import java.util.List;
 
-public class CarreraRepositoryImp implements CarreraRepository{
+public class CarreraRepositoryImpl implements CarreraRepository {
     @Override
     public void insertarDesdeCSV(String rutaArchivo) {
         EntityManager em = JPAUtil.getEntityManager();
@@ -45,30 +45,34 @@ public class CarreraRepositoryImp implements CarreraRepository{
     public List<CarreraDTO> getCarrerasActivas() {
         return List.of();
     }
-}
 
-    public List<ReporteCarreraAnioDTO> getCarrerasDeManeraCronologica(){
+
+    public List<ReporteCarreraAnioDTO> getCarrerasDeManeraCronologica() {
         EntityManager em = JPAUtil.getEntityManager();
         em.getTransaction().begin();
 
         try {
-            String queryInscriptos = "SELECT new dto.ReporteCarreraAnioDTO(c.id, e.id) " +
-                            "COUNT(m.inscripciones) " +
-                            "COUNT(m.egresados) " +
-                            "FROM Carrera c " +
-                            "LEFT JOIN Matricula m " +
-                            "ON c.id = m.id " +
-                            "ORDER BY c.nombre ASC, m.inscripcion ASC ";
-
+            String queryInscriptos = "SELECT e " +
+                    "COUNT(m.inscripciones) " +
+                    "COUNT(m.egresados) " +
+                    "FROM Carrera c " +
+                    "LEFT JOIN Matricula m " +
+                    "ON c.id = m.id " +
+                    "ORDER BY c.nombre ASC, m.inscripcion ASC ";
 
 
             Query query = em.createNativeQuery(queryInscriptos);
 
             List<ReporteCarreraAnioDTO> reporteCarreraAnioDTOS = List.of();
             reporteCarreraAnioDTOS.addAll(query.getResultList());
-            reporteCarreraAnioDTOS.addAll(query2.getResultList());
-
+               System.out.println(reporteCarreraAnioDTOS.toString());
             em.close();
             return reporteCarreraAnioDTOS;
+
+        }catch (Exception e) {
+            e.printStackTrace();
         }
+        return List.of();
     }
+}
+
