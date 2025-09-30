@@ -139,15 +139,16 @@ public class EstudianteRepositoryImpl implements EstudianteRepository {
     }
 
     //g) recuperar los estudiantes de una determinada carrera, filtrado por ciudad de residencia
-    @Override
     public List<EstudianteDTO> buscarEstudiantesPorCarreraYCiudad(String carrera, String ciudad) {
+        System.out.println("Carrera y Ciudad: " + carrera + ", " + ciudad);
         try {
             return (List<EstudianteDTO>) em.createQuery(
                     "SELECT new dto.EstudianteDTO(e.id, e.nombre, e.apellido, e.edad, e.genero, e.ciudad, e.documento, e.LU)" +
                             "FROM Matricula m JOIN Estudiante e " +
+                            "ON m.estudiante.id = e.id " +
                             "WHERE e.ciudad = :ciudad AND m.carrera.nombre = :carrera",
                     EstudianteDTO.class
-            ).setParameter("ciudad", carrera).setParameter("ciudad", ciudad).getResultList();
+            ).setParameter("carrera", carrera).setParameter("ciudad", ciudad).getResultList();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
