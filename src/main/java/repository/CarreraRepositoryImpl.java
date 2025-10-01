@@ -2,8 +2,8 @@ package repository;
 
 import com.opencsv.CSVReader;
 
-import dto.ReporteCarreraAnioDTO;
 import dto.ReporteCarrerasXInscriptosDTO;
+import dto.ReporteCarreraDTO;
 import entities.Carrera;
 import factory.JPAUtil;
 import jakarta.persistence.EntityManager;
@@ -71,27 +71,29 @@ public class CarreraRepositoryImpl implements CarreraRepository {
     }
 
 
-    public List<ReporteCarreraAnioDTO> getCarrerasDeManeraCronologica() {
+    public List<ReporteCarreraDTO> getCarrerasDeManeraCronologica() {
         EntityManager em = JPAUtil.getEntityManager();
         em.getTransaction().begin();
 
         try {
-            String queryInscriptos = "SELECT e " +
-                    "COUNT(m.inscripciones) " +
-                    "COUNT(m.egresados) " +
+            String jpql = "SELECT NEW dto.ReporteCarreraDTO(c.nombre, COUNT(m.id), count(m.graduacion), m.inscripcion) " +
                     "FROM Carrera c " +
-                    "LEFT JOIN Matricula m " +
-                    "ON c.id = m.id " +
-                    "ORDER BY c.nombre ASC, m.inscripcion ASC ";
+                    "JOIN c.matriculas m " +
+                    "GROUP BY c.nombre, m.inscripcion " +
+                    "ORDER BY c.nombre ASC, m.inscripcion ASC";
+
+            List<ReporteCarreraDTO> reporte = em.createQuery(jpql, ReporteCarreraDTO.class).getResultList();
+
+            System.out.println("--- Reporte Final de Carreras ---");
 
 
-            Query query = em.createNativeQuery(queryInscriptos);
+            for (ReporteCarreraDTO linea : reporte) {
+                System.out.println(linea);
+            }
 
-            List<ReporteCarreraAnioDTO> reporteCarreraAnioDTOS = List.of();
-            reporteCarreraAnioDTOS.addAll(query.getResultList());
-               System.out.println(reporteCarreraAnioDTOS.toString());
+
             em.close();
-            return reporteCarreraAnioDTOS;
+            return null;
 
         }catch (Exception e) {
             e.printStackTrace();

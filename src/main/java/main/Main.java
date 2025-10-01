@@ -42,5 +42,7 @@ public class Main {
         //er.buscarEstudiantesPorCarreraYCiudad("Abogacia","Idvor");
         //cr.getCarrerasDeManeraCronologica();
 
+        System.out.println("---------------------");
+        cr.getCarrerasDeManeraCronologica();
     }
 }
