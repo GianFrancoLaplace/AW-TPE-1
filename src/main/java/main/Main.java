@@ -33,9 +33,14 @@ public class Main {
         //System.out.println("MUESTRO ESTUDIANTES POR GENERO: ");
        // er.buscarEstudiantesPorGenero("male");
 
+        //Prueba consigna f)
+        System.out.println("REPORTE DE INSCRIPCIONES POR CARRERA ORDENADOS:");
+        cr.getCarrerasActivas();
+
         //Prueba consigna G
         //System.out.println("MUESTRO ESTUDIANTE DE X CARRERA Y CIUDAD: ");
         //er.buscarEstudiantesPorCarreraYCiudad("Abogacia","Idvor");
-        cr.getCarrerasDeManeraCronologica();
+        //cr.getCarrerasDeManeraCronologica();
+
     }
 }

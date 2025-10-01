@@ -1,9 +1,9 @@
 package repository;
 
 import com.opencsv.CSVReader;
-import dto.CarreraDTO;
 
 import dto.ReporteCarreraAnioDTO;
+import dto.ReporteCarrerasXInscriptosDTO;
 import entities.Carrera;
 import factory.JPAUtil;
 import jakarta.persistence.EntityManager;
@@ -42,7 +42,31 @@ public class CarreraRepositoryImpl implements CarreraRepository {
 
     //f) recuperar las carreras con estudiantes inscriptos, y ordenar por cantidad de inscriptos
     @Override
-    public List<CarreraDTO> getCarrerasActivas() {
+    public List<ReporteCarrerasXInscriptosDTO> getCarrerasActivas() {
+        EntityManager em = JPAUtil.getEntityManager();
+        em.getTransaction().begin();
+
+        try {
+            String jpql = "SELECT new dto.ReporteCarrerasXInscriptosDTO(c.nombre, COUNT(m.estudiante)) " +
+                    "FROM Matricula m " +
+                    "JOIN m.carrera c " +
+                    "GROUP BY c.id, c.nombre " +
+                    "ORDER BY COUNT(m.estudiante) DESC";
+
+            Query query = em.createQuery(jpql, ReporteCarrerasXInscriptosDTO.class);
+            List<ReporteCarrerasXInscriptosDTO> result = query.getResultList();
+
+            for (ReporteCarrerasXInscriptosDTO reporteCarreras : result) {
+                System.out.println(reporteCarreras.toString());
+            }
+
+            em.getTransaction().commit();
+            em.close();
+            return result;
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
         return List.of();
     }
 
